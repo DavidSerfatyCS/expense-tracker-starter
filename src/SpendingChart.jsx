@@ -1,0 +1,36 @@
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer } from 'recharts';
+
+const COLORS = ['#4f86c6', '#e07b54', '#5ab27e', '#c97fc4', '#e8c04a', '#7a7a7a'];
+
+function SpendingChart({ transactions }) {
+  const expensesByCategory = transactions
+    .filter(t => t.type === 'expense')
+    .reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc;
+    }, {});
+
+  const data = Object.entries(expensesByCategory).map(([name, value]) => ({ name, value }));
+
+  if (data.length === 0) return null;
+
+  return (
+    <div className="spending-chart">
+      <h2>Spending by Category</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+          <XAxis dataKey="name" tick={{ fontSize: 13 }} />
+          <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 13 }} />
+          <Tooltip formatter={(value) => `$${value}`} />
+          <Bar dataKey="value" name="Spending">
+            {data.map((_, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export default SpendingChart;
