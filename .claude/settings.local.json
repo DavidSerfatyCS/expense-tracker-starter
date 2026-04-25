@@ -8,7 +8,13 @@
       "mcp__context7__query-docs",
       "Bash(node server.js)",
       "Bash(curl -s http://localhost:3001/api/transactions)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(curl -s http://localhost:3002/api/transactions)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(pkill -f \"concurrently\")",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)"
     ]
   }
 }

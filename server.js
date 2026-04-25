@@ -22,12 +22,18 @@ function extractProperty(properties, name) {
 
 app.get('/api/transactions', async (req, res) => {
   try {
-    const response = await notion.databases.query({
-      database_id: process.env.NOTION_DATABASE_ID,
-      sorts: [{ property: 'Date', direction: 'descending' }],
-    });
+    const [expenseRes, incomeRes] = await Promise.all([
+      notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID,
+        sorts: [{ property: 'Date', direction: 'descending' }],
+      }),
+      notion.databases.query({
+        database_id: process.env.NOTION_INCOME_DATABASE_ID,
+        sorts: [{ property: 'Date', direction: 'descending' }],
+      }),
+    ]);
 
-    const transactions = response.results.map((page, index) => {
+    const expenses = expenseRes.results.map((page) => {
       const props = page.properties;
       return {
         id: page.id,
@@ -39,7 +45,20 @@ app.get('/api/transactions', async (req, res) => {
       };
     });
 
-    res.json(transactions);
+    const income = incomeRes.results.map((page) => {
+      const props = page.properties;
+      return {
+        id: page.id,
+        description: extractProperty(props, 'Name') ?? 'Untitled',
+        amount: extractProperty(props, 'Number') ?? 0,
+        category: 'income',
+        date: extractProperty(props, 'Date') ?? '',
+        type: 'income',
+      };
+    });
+
+    const all = [...expenses, ...income].sort((a, b) => new Date(b.date) - new Date(a.date));
+    res.json(all);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
