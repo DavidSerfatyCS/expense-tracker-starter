@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-const categories = ["food", "housing", "utilities", "transport", "entertainment", "salary", "other"];
+import { CATEGORIES } from './categories'
 
 function TransactionForm({ onAdd }) {
   const [description, setDescription] = useState("");
@@ -10,7 +9,7 @@ function TransactionForm({ onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!description || !amount) return;
+    if (!description || !amount || Number(amount) <= 0) return;
 
     onAdd({
       id: Date.now(),
@@ -48,7 +47,7 @@ function TransactionForm({ onAdd }) {
           <option value="expense">Expense</option>
         </select>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {categories.map(cat => (
+          {CATEGORIES.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>

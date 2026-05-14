@@ -23,8 +23,8 @@ function SpendingChart({ transactions }) {
           <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 13 }} />
           <Tooltip formatter={(value) => `$${value}`} />
           <Bar dataKey="value" name="Spending">
-            {data.map((_, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            {data.map((entry, index) => (
+              <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>
         </BarChart>

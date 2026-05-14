@@ -6,6 +6,7 @@ import cors from 'cors';
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 function extractProperty(properties, name) {
   const prop = properties[name];
@@ -59,6 +60,33 @@ app.get('/api/transactions', async (req, res) => {
 
     const all = [...expenses, ...income].sort((a, b) => new Date(b.date) - new Date(a.date));
     res.json(all);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/transactions', async (req, res) => {
+  const { description, amount, type, category, date } = req.body;
+
+  const databaseId = type === 'income'
+    ? process.env.NOTION_INCOME_DATABASE_ID
+    : process.env.NOTION_DATABASE_ID;
+
+  const amountProperty = type === 'income' ? 'Number' : 'Amount';
+
+  try {
+    const page = await notion.pages.create({
+      parent: { database_id: databaseId },
+      properties: {
+        Name: { title: [{ text: { content: description } }] },
+        [amountProperty]: { number: amount },
+        Category: { select: { name: category } },
+        Date: { date: { start: date } },
+      },
+    });
+
+    res.json({ id: page.id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

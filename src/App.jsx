@@ -14,15 +14,25 @@ function App() {
     fetch('http://localhost:3002/api/transactions')
       .then(res => res.json())
       .then(data => { setTransactions(data); setLoading(false); })
-      .catch(err => { setError('Could not load transactions from Notion.'); setLoading(false); });
+      .catch(() => { setError('Could not load transactions from Notion.'); setLoading(false); });
   }, []);
 
-  const handleAdd = (transaction) => {
-    setTransactions([...transactions, transaction]);
+  const handleAdd = async (transaction) => {
+    try {
+      const res = await fetch('http://localhost:3002/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(transaction),
+      });
+      const { id } = await res.json();
+      setTransactions(prev => [...prev, { ...transaction, id }]);
+    } catch {
+      alert('Failed to save transaction.');
+    }
   };
 
   const handleDelete = (id) => {
-    setTransactions(transactions.filter(t => t.id !== id));
+    setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
   if (loading) return <div className="app"><p>Loading from Notion...</p></div>;
