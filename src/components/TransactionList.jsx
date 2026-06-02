@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { CATEGORIES } from './categories'
+import { CATEGORIES } from '../constants/categories'
+import { formatCurrency } from '../utils/currency'
 
-function TransactionList({ transactions, onDelete }) {
-  const [filterType, setFilterType] = useState("all");
-  const [filterCategory, setFilterCategory] = useState("all");
+function TransactionList({ transactions, period, onDelete }) {
+  const [filterType, setFilterType] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
 
   const filteredTransactions = transactions
-    .filter(t => filterType === "all" || t.type === filterType)
-    .filter(t => filterCategory === "all" || t.category === filterCategory);
+    .filter(t => t.date >= period.start && t.date <= period.end)
+    .filter(t => filterType === 'all' || t.type === filterType)
+    .filter(t => filterCategory === 'all' || t.category === filterCategory);
 
   const handleDelete = (id) => {
     if (window.confirm('Delete this transaction?')) onDelete(id);
@@ -31,7 +33,7 @@ function TransactionList({ transactions, onDelete }) {
       </div>
 
       {filteredTransactions.length === 0 ? (
-        <p className="empty-state">No transactions match your filters.</p>
+        <p className="empty-state">No transactions for this period.</p>
       ) : (
         <table>
           <thead>
@@ -49,8 +51,8 @@ function TransactionList({ transactions, onDelete }) {
                 <td>{t.date}</td>
                 <td>{t.description}</td>
                 <td>{t.category}</td>
-                <td className={t.type === "income" ? "income-amount" : "expense-amount"}>
-                  {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                <td className={t.type === 'income' ? 'income-amount' : 'expense-amount'}>
+                  {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
                 </td>
                 <td>
                   <button className="delete-btn" onClick={() => handleDelete(t.id)}>Delete</button>
