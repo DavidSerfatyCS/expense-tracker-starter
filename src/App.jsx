@@ -64,25 +64,24 @@ function App() {
 
       <main className="main-content">
         <header className="dashboard-header">
-          <div>
-            <h1>Welcome back, David</h1>
-            <p className="subtitle">Here's your overview for {period.label}</p>
-          </div>
-          <div className="dashboard-actions">
-            <PeriodSelector
-              periodType={periodType}
-              periodOffset={periodOffset}
-              onTypeChange={setPeriodType}
-              onOffsetChange={setPeriodOffset}
-            />
-            <button
-              className="btn-primary"
-              onClick={() => document.getElementById('add')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-            >
-              + Add Transaction
-            </button>
-          </div>
+          <h1>Welcome back, David</h1>
+          <p className="subtitle">Here's your overview for {period.label}</p>
         </header>
+
+        <div className="dashboard-toolbar">
+          <PeriodSelector
+            periodType={periodType}
+            periodOffset={periodOffset}
+            onTypeChange={setPeriodType}
+            onOffsetChange={setPeriodOffset}
+          />
+          <button
+            className="btn-primary"
+            onClick={() => document.getElementById('add')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+          >
+            + Add Transaction
+          </button>
+        </div>
 
         <section id="overview">
           <Summary transactions={transactions} period={period} />
