@@ -5,7 +5,7 @@ function TransactionForm({ onAdd }) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("expense");
-  const [category, setCategory] = useState("food");
+  const [category, setCategory] = useState(CATEGORIES[0]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ function TransactionForm({ onAdd }) {
     setDescription("");
     setAmount("");
     setType("expense");
-    setCategory("food");
+    setCategory(CATEGORIES[0]);
   };
 
   return (
