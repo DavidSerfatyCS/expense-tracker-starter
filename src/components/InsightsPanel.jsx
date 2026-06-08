@@ -2,8 +2,8 @@ import { getPeriodBounds } from '../utils/dateUtils';
 import { formatCurrency } from '../utils/currency';
 
 const CATEGORY_EMOJI = {
-  food: '🍕', housing: '🏠', utilities: '⚡',
-  transport: '🚗', entertainment: '🎬', salary: '💰', other: '📦',
+  'food & drinks': '🍕', transportation: '🚗', entertainment: '🎬',
+  health: '🏥', shopping: '🛍️', travel: '✈️', services: '🔧', income: '💰',
 };
 
 function calcSavingsRate(txns, start, end) {
