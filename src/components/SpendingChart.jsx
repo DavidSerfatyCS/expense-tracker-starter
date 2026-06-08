@@ -19,8 +19,11 @@ function SpendingChart({ transactions, period }) {
 
   return (
     <div className="spending-chart">
-      <h2>Spending by Category</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <div className="card-header">
+        <h2>Spending by Category</h2>
+        <span className="card-subtitle">{period.label}</span>
+      </div>
+      <ResponsiveContainer width="100%" height={240}>
         <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 13 }} />
           <YAxis tickFormatter={v => formatCurrency(v)} tick={{ fontSize: 13 }} width={80} />

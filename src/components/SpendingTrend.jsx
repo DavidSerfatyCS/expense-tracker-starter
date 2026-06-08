@@ -23,7 +23,10 @@ function SpendingTrend({ transactions, periodType, periodOffset }) {
 
   return (
     <div className="spending-trend">
-      <h2>Income vs Expenses — {periodType === 'week' ? 'Last 8 Weeks' : 'Last 12 Months'}</h2>
+      <div className="card-header">
+        <h2>Income vs Expenses</h2>
+        <span className="card-subtitle">{periodType === 'week' ? 'Last 8 weeks' : 'Last 12 months'}</span>
+      </div>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }} barCategoryGap="25%">
           <XAxis dataKey="label" tick={{ fontSize: 11 }} />
