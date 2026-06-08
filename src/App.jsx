@@ -83,6 +83,9 @@ function App() {
             fixedItems={fixedItems}
             onAddFixed={addFixedItem}
             onDeleteFixed={deleteFixedItem}
+            period={period}
+            periodType={periodType}
+            periodOffset={periodOffset}
           />
         </aside>
       </div>

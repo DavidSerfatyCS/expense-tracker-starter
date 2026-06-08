@@ -61,6 +61,9 @@ body {
 .savings-bar { height: 5px; background: var(--border-soft); overflow: hidden; margin: 8px 0 4px; }
 .savings-bar-fill { height: 100%; background: var(--income); transition: width 0.4s ease; }
 
+.panel-tabs { display: flex; gap: 4px; margin-bottom: 14px; background: var(--border-soft); border-radius: calc(var(--radius) - 2px); padding: 3px; }
+.panel-tab { flex: 1; padding: 5px 0; font-size: 11px; font-weight: 600; border: none; background: transparent; color: var(--muted); border-radius: calc(var(--radius) - 4px); cursor: pointer; transition: background 0.15s, color 0.15s; text-transform: uppercase; letter-spacing: 0.5px; }
+.panel-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 .fixed-group { margin-bottom: 10px; }
 .fixed-group-header { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
 .fixed-item-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--border-soft); }

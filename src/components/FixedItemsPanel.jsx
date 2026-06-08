@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { formatCurrency } from '../utils/currency';
 
-const GROUPS = [
-  { value: 'housing',      label: 'Housing',      emoji: '🏠' },
-  { value: 'utility',      label: 'Utilities',    emoji: '⚡' },
-  { value: 'subscription', label: 'Subscriptions',emoji: '📱' },
-  { value: 'other',        label: 'Other',        emoji: '📦' },
+const EXPENSE_GROUPS = [
+  { value: 'housing',      label: 'Housing',       emoji: '🏠' },
+  { value: 'utility',      label: 'Utilities',     emoji: '⚡' },
+  { value: 'subscription', label: 'Subscriptions', emoji: '📱' },
+  { value: 'other',        label: 'Other',         emoji: '📦' },
+];
+
+const INCOME_GROUPS = [
+  { value: 'salary',    label: 'Salary',    emoji: '💰' },
+  { value: 'freelance', label: 'Freelance', emoji: '💻' },
+  { value: 'rental',    label: 'Rental',    emoji: '🏘️' },
+  { value: 'other',     label: 'Other',     emoji: '📦' },
 ];
 
 function ordinal(n) {
@@ -15,33 +22,58 @@ function ordinal(n) {
 }
 
 function FixedItemsPanel({ fixedItems, onAdd, onDelete }) {
-  const [showForm, setShowForm] = useState(false);
-  const [name, setName]           = useState('');
-  const [amount, setAmount]       = useState('');
-  const [group, setGroup]         = useState('housing');
+  const [activeTab, setActiveTab]   = useState('expense');
+  const [showForm, setShowForm]     = useState(false);
+  const [name, setName]             = useState('');
+  const [amount, setAmount]         = useState('');
+  const [group, setGroup]           = useState('housing');
   const [dayOfMonth, setDayOfMonth] = useState(1);
+
+  const groups = activeTab === 'expense' ? EXPENSE_GROUPS : INCOME_GROUPS;
+  const items  = fixedItems.filter(i => i.type === activeTab);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setShowForm(false);
+    setGroup(tab === 'expense' ? 'housing' : 'salary');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !amount || Number(amount) <= 0) return;
-    onAdd({ name, amount: Number(amount), type: 'expense', group, dayOfMonth: Number(dayOfMonth) });
-    setName(''); setAmount(''); setGroup('housing'); setDayOfMonth(1);
+    onAdd({ name, amount: Number(amount), type: activeTab, group, dayOfMonth: Number(dayOfMonth) });
+    setName(''); setAmount(''); setGroup(activeTab === 'expense' ? 'housing' : 'salary'); setDayOfMonth(1);
     setShowForm(false);
   };
 
-  const monthlyTotal = fixedItems.filter(i => i.type === 'expense').reduce((s, i) => s + i.amount, 0);
+  const monthlyTotal = items.reduce((s, i) => s + i.amount, 0);
 
   return (
     <div className="sidebar-panel">
-      <h3 className="sidebar-panel-title">Fixed Expenses</h3>
+      <h3 className="sidebar-panel-title">Fixed Items</h3>
 
-      {GROUPS.map(g => {
-        const items = fixedItems.filter(i => i.group === g.value);
-        if (items.length === 0) return null;
+      <div className="panel-tabs">
+        <button
+          className={`panel-tab ${activeTab === 'expense' ? 'active' : ''}`}
+          onClick={() => handleTabChange('expense')}
+        >
+          Expenses
+        </button>
+        <button
+          className={`panel-tab ${activeTab === 'income' ? 'active' : ''}`}
+          onClick={() => handleTabChange('income')}
+        >
+          Income
+        </button>
+      </div>
+
+      {groups.map(g => {
+        const groupItems = items.filter(i => i.group === g.value);
+        if (groupItems.length === 0) return null;
         return (
           <div key={g.value} className="fixed-group">
             <div className="fixed-group-header">{g.emoji} {g.label}</div>
-            {items.map(item => (
+            {groupItems.map(item => (
               <div key={item.id} className="fixed-item-row">
                 <span className="fixed-item-name">{item.name}</span>
                 <span className="fixed-item-day">{ordinal(item.dayOfMonth)}</span>
@@ -53,8 +85,8 @@ function FixedItemsPanel({ fixedItems, onAdd, onDelete }) {
         );
       })}
 
-      {fixedItems.length === 0 && !showForm && (
-        <p className="insight-empty">No fixed expenses yet</p>
+      {items.length === 0 && !showForm && (
+        <p className="insight-empty">No fixed {activeTab === 'expense' ? 'expenses' : 'income'} yet</p>
       )}
 
       {monthlyTotal > 0 && (
@@ -81,7 +113,7 @@ function FixedItemsPanel({ fixedItems, onAdd, onDelete }) {
             value={amount} onChange={e => setAmount(e.target.value)}
           />
           <select value={group} onChange={e => setGroup(e.target.value)}>
-            {GROUPS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+            {groups.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
           </select>
           <input
             type="number" placeholder="Day of month" min="1" max="31"
@@ -94,7 +126,7 @@ function FixedItemsPanel({ fixedItems, onAdd, onDelete }) {
         </form>
       ) : (
         <button className="fixed-add-btn" onClick={() => setShowForm(true)}>
-          + Add fixed expense
+          + Add fixed {activeTab === 'expense' ? 'expense' : 'income'}
         </button>
       )}
     </div>

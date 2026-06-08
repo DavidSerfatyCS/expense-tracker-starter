@@ -13,37 +13,34 @@ function calcSavingsRate(txns, start, end) {
   return { income, expense, rate: income > 0 ? (income - expense) / income * 100 : null };
 }
 
-function InsightsPanel({ transactions, fixedItems }) {
+function InsightsPanel({ transactions, fixedItems, period, periodType, periodOffset }) {
   const today = new Date();
-  const { start: mStart, end: mEnd } = getPeriodBounds('month', 0);
-  const { start: lStart, end: lEnd } = getPeriodBounds('month', -1);
+  const { start, end } = period;
+  const { start: prevStart, end: prevEnd } = getPeriodBounds(periodType, periodOffset - 1);
 
-  const curr = calcSavingsRate(transactions, mStart, mEnd);
-  const last = calcSavingsRate(transactions, lStart, lEnd);
-  const savingsDelta = curr.rate !== null && last.rate !== null ? curr.rate - last.rate : null;
+  const curr = calcSavingsRate(transactions, start, end);
+  const prev = calcSavingsRate(transactions, prevStart, prevEnd);
+  const savingsDelta = curr.rate !== null && prev.rate !== null ? curr.rate - prev.rate : null;
+  const prevLabel = periodType === 'month' ? 'last mo' : 'last wk';
 
-  // Top expense category this month
   const catTotals = transactions
-    .filter(t => t.date >= mStart && t.date <= mEnd && t.type === 'expense')
+    .filter(t => t.date >= start && t.date <= end && t.type === 'expense')
     .reduce((acc, t) => { acc[t.category] = (acc[t.category] || 0) + t.amount; return acc; }, {});
   const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
 
-  // Fixed costs
   const fixedMonthly = fixedItems.filter(i => i.type === 'expense').reduce((s, i) => s + i.amount, 0);
   const fixedPct = curr.income > 0 ? fixedMonthly / curr.income * 100 : null;
 
-  // Projected month-end balance
+  const isCurrentMonth = periodType === 'month' && periodOffset === 0;
   const daysInMonth   = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const daysPassed    = today.getDate();
   const remainingDays = daysInMonth - daysPassed;
   const dailyNet      = daysPassed > 0 ? (curr.income - curr.expense) / daysPassed : 0;
   const projected     = curr.income - curr.expense + remainingDays * dailyNet;
 
-  const monthName = today.toLocaleDateString('en-US', { month: 'long' });
-
   return (
     <div className="sidebar-panel">
-      <h3 className="sidebar-panel-title">Insights — {monthName}</h3>
+      <h3 className="sidebar-panel-title">Insights — {period.label}</h3>
 
       {/* Savings Rate */}
       <div className="insight-block">
@@ -60,7 +57,7 @@ function InsightsPanel({ transactions, fixedItems }) {
               <span className="insight-value">{curr.rate.toFixed(0)}%</span>
               {savingsDelta !== null && (
                 <span className={`insight-delta ${savingsDelta >= 0 ? 'positive' : 'negative'}`}>
-                  {savingsDelta >= 0 ? '+' : ''}{savingsDelta.toFixed(0)}% vs last mo
+                  {savingsDelta >= 0 ? '+' : ''}{savingsDelta.toFixed(0)}% vs {prevLabel}
                 </span>
               )}
             </div>
@@ -100,8 +97,8 @@ function InsightsPanel({ transactions, fixedItems }) {
         </div>
       )}
 
-      {/* Projected Month-End */}
-      {daysPassed > 1 && (
+      {/* Projected Month-End — solo mes actual */}
+      {isCurrentMonth && daysPassed > 1 && (
         <div className="insight-block">
           <div className="insight-label">Projected Month-End</div>
           <div className={`insight-value ${projected < 0 ? 'negative' : ''}`}>
