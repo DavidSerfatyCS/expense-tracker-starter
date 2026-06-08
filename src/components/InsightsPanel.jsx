@@ -1,5 +1,6 @@
 import { getPeriodBounds } from '../utils/dateUtils';
 import { formatCurrency } from '../utils/currency';
+import { topExpenseCategory } from '../utils/transactions';
 
 const CATEGORY_EMOJI = {
   'food & drinks': '🍕', transportation: '🚗', entertainment: '🎬',
@@ -23,10 +24,7 @@ function InsightsPanel({ transactions, fixedItems, period, periodType, periodOff
   const savingsDelta = curr.rate !== null && prev.rate !== null ? curr.rate - prev.rate : null;
   const prevLabel = periodType === 'month' ? 'last mo' : 'last wk';
 
-  const catTotals = transactions
-    .filter(t => t.date >= start && t.date <= end && t.type === 'expense')
-    .reduce((acc, t) => { acc[t.category] = (acc[t.category] || 0) + t.amount; return acc; }, {});
-  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+  const topCat = topExpenseCategory(transactions, start, end);
 
   const fixedMonthly = fixedItems.filter(i => i.type === 'expense').reduce((s, i) => s + i.amount, 0);
   const fixedPct = curr.income > 0 ? fixedMonthly / curr.income * 100 : null;

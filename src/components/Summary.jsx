@@ -1,4 +1,5 @@
 import { formatCurrency } from '../utils/currency';
+import { topExpenseCategory } from '../utils/transactions';
 
 function Summary({ transactions, period }) {
   const scoped = transactions.filter(t => t.date >= period.start && t.date <= period.end);
@@ -19,10 +20,7 @@ function Summary({ transactions, period }) {
     ? `${incomeCount} ${incomeCount === 1 ? 'entry' : 'entries'} this period`
     : 'No income recorded';
 
-  const catTotals = scoped
-    .filter(t => t.type === 'expense')
-    .reduce((acc, t) => { acc[t.category] = (acc[t.category] || 0) + t.amount; return acc; }, {});
-  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+  const topCat = topExpenseCategory(transactions, period.start, period.end);
   const expenseSub = topCat ? `Top category: ${topCat[0]}` : 'No expenses recorded';
 
   const savingsRate = totalIncome > 0 ? (balance / totalIncome) * 100 : null;
