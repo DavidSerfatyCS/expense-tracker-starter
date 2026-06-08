@@ -476,19 +476,20 @@ h1 {
 
 form {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
 
 form input,
 form select {
+  width: 100%;
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 9px 12px;
+  padding: 10px 12px;
   font-size: 13px;
   font-family: 'Inter', system-ui, sans-serif;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   outline: none;
   transition: border-color 0.15s;
 }
@@ -498,16 +499,14 @@ form select:focus {
   border-color: var(--accent);
 }
 
-form input[type="text"]   { flex: 2; min-width: 140px; }
-form input[type="number"] { flex: 1; min-width: 80px; }
-form select               { flex: 1; min-width: 100px; }
-
 form button {
-  padding: 9px 22px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 11px;
   background: var(--text);
   color: var(--surface);
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
