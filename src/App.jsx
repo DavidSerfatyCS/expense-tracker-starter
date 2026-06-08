@@ -8,6 +8,7 @@ import SpendingTrend from './components/SpendingTrend'
 import PeriodSelector from './components/PeriodSelector'
 import Sidebar from './components/Sidebar'
 import AppNav from './components/AppNav'
+import Modal from './components/Modal'
 import { getPeriodBounds } from './utils/dateUtils'
 import { useFixedItems } from './hooks/useFixedItems'
 
@@ -19,6 +20,7 @@ function App() {
   const [error, setError] = useState(null);
   const [periodType, setPeriodType] = useState('week');
   const [periodOffset, setPeriodOffset] = useState(0);
+  const [showAddModal, setShowAddModal] = useState(false);
   const { fixedItems, addFixedItem, deleteFixedItem } = useFixedItems();
 
   const period = getPeriodBounds(periodType, periodOffset);
@@ -75,20 +77,13 @@ function App() {
             onTypeChange={setPeriodType}
             onOffsetChange={setPeriodOffset}
           />
-          <button
-            className="btn-primary"
-            onClick={() => document.getElementById('add')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-          >
+          <button className="btn-primary" onClick={() => setShowAddModal(true)}>
             + Add Transaction
           </button>
         </div>
 
         <section id="overview">
           <Summary transactions={transactions} period={period} />
-        </section>
-
-        <section id="add">
-          <TransactionForm onAdd={handleAdd} />
         </section>
 
         <section id="analytics">
@@ -112,6 +107,12 @@ function App() {
           periodOffset={periodOffset}
         />
       </aside>
+
+      {showAddModal && (
+        <Modal onClose={() => setShowAddModal(false)}>
+          <TransactionForm onAdd={(t) => { handleAdd(t); setShowAddModal(false); }} />
+        </Modal>
+      )}
     </div>
   );
 }

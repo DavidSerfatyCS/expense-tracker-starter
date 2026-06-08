@@ -509,6 +509,53 @@ form button {
 
 form button:hover { opacity: 0.78; }
 
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 24, 20, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.modal-close:hover { color: var(--text); }
+
+/* Strip the form's own card chrome when inside the modal */
+.modal-content .add-transaction {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+
 /* ── Chart ── */
 .spending-chart {
   background: var(--surface);
