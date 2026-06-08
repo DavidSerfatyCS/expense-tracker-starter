@@ -1,14 +1,16 @@
+// Format a Date as YYYY-MM-DD in LOCAL time. toISOString() converts to UTC,
+// which rolls the date back a day in positive-offset timezones (e.g. month
+// start lands on the previous month's last day), shifting period bounds, chart
+// labels, and the date stamped on newly-added transactions.
+export function toYMD(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 export function getPeriodBounds(type, offset) {
   const today = new Date();
-  // Format in local time — toISOString() converts to UTC, which rolls the date
-  // back a day in positive-offset timezones (e.g. month start lands on the
-  // previous month's last day), shifting period bounds and chart labels.
-  const toYMD = (d) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
 
   if (type === 'week') {
     const dow = today.getDay(); // 0 = Sun

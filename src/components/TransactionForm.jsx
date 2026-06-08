@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CATEGORIES } from '../constants/categories'
+import { toYMD } from '../utils/dateUtils'
 
 function TransactionForm({ onAdd }) {
   const [description, setDescription] = useState("");
@@ -17,7 +18,7 @@ function TransactionForm({ onAdd }) {
       amount: Number(amount),
       type,
       category,
-      date: new Date().toISOString().split('T')[0],
+      date: toYMD(new Date()),
     });
 
     setDescription("");
