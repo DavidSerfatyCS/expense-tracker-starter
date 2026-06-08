@@ -63,21 +63,34 @@ function App() {
       <AppNav />
 
       <main className="main-content">
-        <h1>Finance Tracker</h1>
-        <p className="subtitle">Track your income and expenses</p>
-
-        <PeriodSelector
-          periodType={periodType}
-          periodOffset={periodOffset}
-          onTypeChange={setPeriodType}
-          onOffsetChange={setPeriodOffset}
-        />
+        <header className="dashboard-header">
+          <div>
+            <h1>Welcome back, David</h1>
+            <p className="subtitle">Here's your overview for {period.label}</p>
+          </div>
+          <div className="dashboard-actions">
+            <PeriodSelector
+              periodType={periodType}
+              periodOffset={periodOffset}
+              onTypeChange={setPeriodType}
+              onOffsetChange={setPeriodOffset}
+            />
+            <button
+              className="btn-primary"
+              onClick={() => document.getElementById('add')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+            >
+              + Add Transaction
+            </button>
+          </div>
+        </header>
 
         <section id="overview">
           <Summary transactions={transactions} period={period} />
         </section>
 
-        <TransactionForm onAdd={handleAdd} />
+        <section id="add">
+          <TransactionForm onAdd={handleAdd} />
+        </section>
 
         <section id="analytics">
           <SpendingTrend transactions={transactions} periodType={periodType} periodOffset={periodOffset} />
