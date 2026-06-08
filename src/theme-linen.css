@@ -589,7 +589,22 @@ form button:hover { opacity: 0.78; }
 }
 
 /* ── Transaction List ── */
-.transactions { margin-bottom: 24px; }
+.transactions {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.transactions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
 
 .transactions h2 {
   font-size: 10px;
@@ -597,40 +612,34 @@ form button:hover { opacity: 0.78; }
   letter-spacing: 1.3px;
   color: var(--muted);
   font-weight: 500;
-  margin-bottom: 12px;
 }
 
 .filters {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
 }
 
 .filters select {
-  background: var(--surface);
+  background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text);
   padding: 6px 10px;
   font-size: 12px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: 'Inter', system-ui, sans-serif;
   outline: none;
+  cursor: pointer;
 }
+
+.table-scroll { overflow-x: auto; }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-thead { background: var(--bg); }
-
 th {
-  padding: 11px 16px;
+  padding: 10px 14px;
   text-align: left;
   font-size: 10px;
   color: var(--muted);
@@ -638,38 +647,63 @@ th {
   letter-spacing: 1.1px;
   font-weight: 500;
   border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 
 td {
-  padding: 13px 16px;
+  padding: 12px 14px;
   font-size: 13px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
 }
 
-tr:last-child td { border-bottom: none; }
+tbody tr { transition: background 0.12s; }
+tbody tr:hover { background: var(--bg); }
+tbody tr:last-child td { border-bottom: none; }
 
-td .income-amount,
-td .expense-amount {
+.date-cell { color: var(--muted); white-space: nowrap; }
+
+.amount-cell { text-align: right; white-space: nowrap; }
+.action-cell { text-align: right; width: 1%; }
+
+td.income-amount,
+td.expense-amount {
   font-size: 13px;
   font-weight: 500;
 }
 
-.delete-btn {
-  padding: 4px 10px;
-  background: transparent;
-  border: 1px solid var(--border);
-  cursor: pointer;
+.cat-badge {
+  display: inline-block;
+  padding: 2px 9px;
   font-size: 11px;
   color: var(--muted);
-  border-radius: var(--radius);
-  font-family: 'Inter', system-ui, sans-serif;
-  transition: border-color 0.15s, color 0.15s;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.delete-btn {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  opacity: 0.5;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
 
 .delete-btn:hover {
-  border-color: var(--expense);
+  opacity: 1;
   color: var(--expense);
+  background: var(--bg);
 }
 
 /* ── Period Selector ── */
