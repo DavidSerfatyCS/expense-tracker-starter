@@ -7,6 +7,7 @@ import SpendingChart from './components/SpendingChart'
 import SpendingTrend from './components/SpendingTrend'
 import PeriodSelector from './components/PeriodSelector'
 import Sidebar from './components/Sidebar'
+import AppNav from './components/AppNav'
 import { getPeriodBounds } from './utils/dateUtils'
 import { useFixedItems } from './hooks/useFixedItems'
 
@@ -59,36 +60,46 @@ function App() {
 
   return (
     <div className="app">
-      <div className="layout">
-        <main className="main-content">
-          <h1>Finance Tracker</h1>
-          <p className="subtitle">Track your income and expenses</p>
+      <AppNav />
 
-          <PeriodSelector
-            periodType={periodType}
-            periodOffset={periodOffset}
-            onTypeChange={setPeriodType}
-            onOffsetChange={setPeriodOffset}
-          />
+      <main className="main-content">
+        <h1>Finance Tracker</h1>
+        <p className="subtitle">Track your income and expenses</p>
+
+        <PeriodSelector
+          periodType={periodType}
+          periodOffset={periodOffset}
+          onTypeChange={setPeriodType}
+          onOffsetChange={setPeriodOffset}
+        />
+
+        <section id="overview">
           <Summary transactions={transactions} period={period} />
-          <TransactionForm onAdd={handleAdd} />
+        </section>
+
+        <TransactionForm onAdd={handleAdd} />
+
+        <section id="analytics">
           <SpendingTrend transactions={transactions} periodType={periodType} periodOffset={periodOffset} />
           <SpendingChart transactions={transactions} period={period} />
-          <TransactionList transactions={transactions} period={period} onDelete={handleDelete} />
-        </main>
+        </section>
 
-        <aside className="sidebar-container">
-          <Sidebar
-            transactions={transactions}
-            fixedItems={fixedItems}
-            onAddFixed={addFixedItem}
-            onDeleteFixed={deleteFixedItem}
-            period={period}
-            periodType={periodType}
-            periodOffset={periodOffset}
-          />
-        </aside>
-      </div>
+        <section id="transactions">
+          <TransactionList transactions={transactions} period={period} onDelete={handleDelete} />
+        </section>
+      </main>
+
+      <aside className="sidebar-container" id="fixed">
+        <Sidebar
+          transactions={transactions}
+          fixedItems={fixedItems}
+          onAddFixed={addFixedItem}
+          onDeleteFixed={deleteFixedItem}
+          period={period}
+          periodType={periodType}
+          periodOffset={periodOffset}
+        />
+      </aside>
     </div>
   );
 }
