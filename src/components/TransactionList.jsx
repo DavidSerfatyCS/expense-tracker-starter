@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { CATEGORIES } from '../constants/categories'
 import { formatCurrency } from '../utils/currency'
 
 function TransactionList({ transactions, period, onDelete }) {
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
+
+  // Derived from actual data so filter options always match the table.
+  const availableCategories = [...new Set(transactions.map(t => t.category))].sort();
 
   const filteredTransactions = transactions
     .filter(t => t.date >= period.start && t.date <= period.end)
@@ -26,7 +28,7 @@ function TransactionList({ transactions, period, onDelete }) {
         </select>
         <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
           <option value="all">All Categories</option>
-          {CATEGORIES.map(cat => (
+          {availableCategories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
