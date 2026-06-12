@@ -1,7 +1,8 @@
 /* ── Active theme ───────────────────────────────────────────────────────────
    Switch by changing the import below to one of:
+     ./theme-atelier.css   (paper+ink editorial, light/dark via data-theme)
      ./theme-carbon.css    (dark, monospace numbers, violet accent)
      ./theme-linen.css     (warm cream, serif headline, earthy tones)
      ./theme-blueprint.css (white, hard black borders, cobalt accent)
 ──────────────────────────────────────────────────────────────────────────── */
-@import './theme-linen.css';
+@import './theme-atelier.css';

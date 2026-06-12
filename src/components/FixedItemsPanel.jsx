@@ -49,7 +49,7 @@ function FixedItemsPanel({ fixedItems, onAdd, onDelete }) {
   const monthlyTotal = items.reduce((s, i) => s + i.amount, 0);
 
   return (
-    <div className="sidebar-panel">
+    <div className="card sidebar-panel">
       <h3 className="sidebar-panel-title">Fixed Items</h3>
 
       <div className="panel-tabs">

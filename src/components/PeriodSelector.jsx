@@ -18,7 +18,7 @@ function PeriodSelector({ periodType, periodOffset, onTypeChange, onOffsetChange
           disabled={periodOffset >= 0}
         >→</button>
       </div>
-      <div className="period-toggle">
+      <div className="seg-control">
         <button
           className={periodType === 'week' ? 'active' : ''}
           onClick={() => handleTypeChange('week')}

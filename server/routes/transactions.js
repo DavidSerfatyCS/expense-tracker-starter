@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fetchTransactions, createTransaction, deleteTransaction } from '../notion.js';
+import { fetchTransactions, createTransaction, updateTransaction, deleteTransaction } from '../notion.js';
 
 const router = Router();
 
@@ -16,6 +16,16 @@ router.post('/', async (req, res) => {
   try {
     const id = await createTransaction(req.body);
     res.json({ id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.patch('/:id', async (req, res) => {
+  try {
+    await updateTransaction(req.params.id, req.body);
+    res.json({ ok: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

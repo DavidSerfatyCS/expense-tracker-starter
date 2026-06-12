@@ -1,8 +1,10 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Cell } from 'recharts';
 import { getPeriodBounds } from '../utils/dateUtils';
 import { formatCurrency } from '../utils/currency';
+import { getChartColors } from '../utils/chartColors';
 
 function SpendingTrend({ transactions, periodType, periodOffset }) {
+  const colors = getChartColors();
   const count = periodType === 'week' ? 8 : 12;
 
   const data = Array.from({ length: count }, (_, i) => {
@@ -22,25 +24,25 @@ function SpendingTrend({ transactions, periodType, periodOffset }) {
   });
 
   return (
-    <div className="spending-trend">
+    <div className="card spending-trend">
       <div className="card-header">
         <h2>Income vs Expenses</h2>
         <span className="card-subtitle">{periodType === 'week' ? 'Last 8 weeks' : 'Last 12 months'}</span>
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }} barCategoryGap="25%">
-          <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-          <YAxis tickFormatter={v => formatCurrency(v)} tick={{ fontSize: 11 }} width={80} />
-          <Tooltip formatter={v => formatCurrency(v)} />
-          <Legend iconSize={10} wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="income" name="Income" radius={[2, 2, 0, 0]}>
+          <XAxis dataKey="label" tick={{ fontSize: 11, fill: colors.muted }} axisLine={{ stroke: colors.border }} tickLine={false} />
+          <YAxis tickFormatter={v => formatCurrency(v)} tick={{ fontSize: 11, fill: colors.muted }} width={80} axisLine={false} tickLine={false} />
+          <Tooltip formatter={v => formatCurrency(v)} cursor={{ fill: colors.border, opacity: .35 }} />
+          <Legend iconSize={10} wrapperStyle={{ fontSize: 12, color: colors.muted }} />
+          <Bar dataKey="income" name="Income" radius={[4, 4, 0, 0]}>
             {data.map((entry, i) => (
-              <Cell key={i} fill={entry.isCurrent ? '#2d6a4f' : '#2d6a4f44'} />
+              <Cell key={i} fill={colors.income} opacity={entry.isCurrent ? 1 : 0.35} />
             ))}
           </Bar>
-          <Bar dataKey="expense" name="Expenses" radius={[2, 2, 0, 0]}>
+          <Bar dataKey="expense" name="Expenses" radius={[4, 4, 0, 0]}>
             {data.map((entry, i) => (
-              <Cell key={i} fill={entry.isCurrent ? '#b84030' : '#b8403044'} />
+              <Cell key={i} fill={colors.expense} opacity={entry.isCurrent ? 1 : 0.35} />
             ))}
           </Bar>
         </BarChart>

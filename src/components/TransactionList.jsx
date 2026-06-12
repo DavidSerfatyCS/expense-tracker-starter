@@ -1,74 +1,91 @@
-import { useState } from 'react'
-import { formatCurrency } from '../utils/currency'
+import { formatCurrency } from '../utils/currency';
+import { CATEGORY_EMOJI } from '../constants/categories';
 
-function TransactionList({ transactions, period, onDelete }) {
-  const [filterType, setFilterType] = useState('all');
-  const [filterCategory, setFilterCategory] = useState('all');
+const EditIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z" />
+  </svg>
+);
 
-  // Derived from actual data so filter options always match the table.
-  const availableCategories = [...new Set(transactions.map(t => t.category))].sort();
+const DeleteIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 6h18" /><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+  </svg>
+);
 
-  const filteredTransactions = transactions
-    .filter(t => t.date >= period.start && t.date <= period.end)
-    .filter(t => filterType === 'all' || t.type === filterType)
-    .filter(t => filterCategory === 'all' || t.category === filterCategory);
-
+// Presentational table. Filtering/sorting state lives in TransactionsView.
+function TransactionList({ transactions, sortKey, sortDir, onSort, onEdit, onDelete }) {
   const handleDelete = (id) => {
     if (window.confirm('Delete this transaction?')) onDelete(id);
   };
 
+  const arrow = (key) =>
+    sortKey === key ? <span className="sort-arrow">{sortDir === 'asc' ? '▲' : '▼'}</span> : null;
+
+  if (transactions.length === 0) {
+    return (
+      <p className="empty-state">
+        <span className="empty-state-icon">🔍</span>
+        No transactions match your filters.
+      </p>
+    );
+  }
+
+  const income  = transactions.filter(t => t.type === 'income') .reduce((s, t) => s + t.amount, 0);
+  const expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const net = income - expense;
+
   return (
-    <div className="transactions">
-      <div className="transactions-header">
-        <h2>Transactions</h2>
-        <div className="filters">
-          <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-            <option value="all">All Types</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-            <option value="all">All Categories</option>
-            {availableCategories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+    <>
+      <div className="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th className="sortable" onClick={() => onSort('date')}>Date{arrow('date')}</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th className="sortable amount-cell" onClick={() => onSort('amount')}>Amount{arrow('amount')}</th>
+              <th className="action-cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map(t => (
+              <tr key={t.id}>
+                <td className="date-cell">{t.date}</td>
+                <td>{t.description}</td>
+                <td>
+                  <span className="cat-badge">
+                    {CATEGORY_EMOJI[t.category] ?? '📦'} {t.category}
+                  </span>
+                </td>
+                <td className={`amount-cell ${t.type === 'income' ? 'income-amount' : 'expense-amount'}`}>
+                  {t.type === 'income' ? '+' : '−'}{formatCurrency(t.amount)}
+                </td>
+                <td className="action-cell">
+                  <button className="icon-btn edit-btn" onClick={() => onEdit(t)} aria-label="Edit">
+                    {EditIcon}
+                  </button>
+                  <button className="icon-btn delete-btn" onClick={() => handleDelete(t.id)} aria-label="Delete">
+                    {DeleteIcon}
+                  </button>
+                </td>
+              </tr>
             ))}
-          </select>
-        </div>
+          </tbody>
+        </table>
       </div>
 
-      {filteredTransactions.length === 0 ? (
-        <p className="empty-state">No transactions for this period.</p>
-      ) : (
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th className="amount-cell">Amount</th>
-                <th className="action-cell"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTransactions.map(t => (
-                <tr key={t.id}>
-                  <td className="date-cell">{t.date}</td>
-                  <td>{t.description}</td>
-                  <td><span className="cat-badge">{t.category}</span></td>
-                  <td className={`amount-cell ${t.type === 'income' ? 'income-amount' : 'expense-amount'}`}>
-                    {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
-                  </td>
-                  <td className="action-cell">
-                    <button className="delete-btn" onClick={() => handleDelete(t.id)} aria-label="Delete">×</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+      <div className="table-totals">
+        <span>{transactions.length} {transactions.length === 1 ? 'transaction' : 'transactions'}</span>
+        <span>
+          Net&nbsp;
+          <strong className={net < 0 ? 'expense-amount' : 'income-amount'}>
+            {net < 0 ? '−' : '+'}{formatCurrency(Math.abs(net))}
+          </strong>
+        </span>
+      </div>
+    </>
   );
 }
 

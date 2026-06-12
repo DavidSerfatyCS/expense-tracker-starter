@@ -9,6 +9,18 @@ export function toYMD(d) {
   return `${y}-${m}-${day}`;
 }
 
+// Today as YYYY-MM-DD (local time).
+export function todayYMD() {
+  return toYMD(new Date());
+}
+
+// The date `n` days ago as YYYY-MM-DD (local time).
+export function daysAgoYMD(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return toYMD(d);
+}
+
 export function getPeriodBounds(type, offset) {
   const today = new Date();
 

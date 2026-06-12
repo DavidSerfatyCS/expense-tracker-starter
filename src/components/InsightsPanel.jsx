@@ -1,11 +1,7 @@
 import { getPeriodBounds } from '../utils/dateUtils';
 import { formatCurrency } from '../utils/currency';
 import { topExpenseCategory } from '../utils/transactions';
-
-const CATEGORY_EMOJI = {
-  'food & drinks': '🍕', transportation: '🚗', entertainment: '🎬',
-  health: '🏥', shopping: '🛍️', travel: '✈️', services: '🔧', income: '💰',
-};
+import { CATEGORY_EMOJI } from '../constants/categories';
 
 function calcSavingsRate(txns, start, end) {
   const scoped  = txns.filter(t => t.date >= start && t.date <= end);
@@ -37,7 +33,7 @@ function InsightsPanel({ transactions, fixedItems, period, periodType, periodOff
   const projected     = curr.income - curr.expense + remainingDays * dailyNet;
 
   return (
-    <div className="sidebar-panel">
+    <div className="card sidebar-panel">
       <h3 className="sidebar-panel-title">Insights — {period.label}</h3>
 
       {/* Savings Rate */}

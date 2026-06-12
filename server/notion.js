@@ -71,6 +71,23 @@ export async function createTransaction({ description, amount, type, category, d
   return page.id;
 }
 
+// Updates an existing transaction page. `type` decides the amount property name
+// (expense DB uses `Amount`, income DB uses `Number`). The type itself cannot be
+// changed here — that would mean moving the page to the other database, which the
+// Notion API only supports as archive + recreate.
+export async function updateTransaction(id, { description, amount, category, date, type }) {
+  const amountProperty = type === 'income' ? 'Number' : 'Amount';
+
+  const properties = {};
+  if (description !== undefined) properties.Name = { title: [{ text: { content: description } }] };
+  if (amount !== undefined)      properties[amountProperty] = { number: Number(amount) };
+  if (date !== undefined)        properties.Date = { date: { start: date } };
+  // Income category is hardcoded to "income" and the income DB has no Category select.
+  if (category !== undefined && type !== 'income') properties.Category = { select: { name: category } };
+
+  await notion.pages.update({ page_id: id, properties });
+}
+
 // Notion has no hard delete via the API; archiving removes the page from the database view.
 export async function deleteTransaction(id) {
   await notion.pages.update({ page_id: id, archived: true });
