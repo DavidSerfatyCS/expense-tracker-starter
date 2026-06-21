@@ -125,7 +125,7 @@ function App() {
       <div className="app">
         <AppNav view={view} onNavigate={setView} theme={theme} onToggleTheme={toggleTheme} />
         <main className="main-content main-content-bleed">
-          <ThailandView transactions={transactions} />
+          <ThailandView transactions={transactions} theme={theme} />
         </main>
       </div>
     );

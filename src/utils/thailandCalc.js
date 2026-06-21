@@ -174,3 +174,30 @@ export function estimateTripCost({ flights = 0, nights = 0, nightlyStay = 0, day
   const base = flights + nights * nightlyStay + days * dailyBudget + activities;
   return Math.round(base * (1 + bufferPct));
 }
+
+// --- fund balance (branch tailandia-version) ------------------------------
+// "Ahorrado" = aporte inicial + aportes manuales + superávit real de Notion
+// desde que se creó la meta (piso en 0: un mes malo no resta el fondo).
+
+// Net (income − expense) over real transactions from startYMD..todayYMD.
+export function netSurplusSince(transactions, startYMD, todayYMD) {
+  if (!transactions?.length || !startYMD) return 0;
+  let income = 0;
+  let expense = 0;
+  for (const t of transactions) {
+    if (t.date < startYMD || t.date > todayYMD) continue;
+    if (t.type === 'income') income += Number(t.amount) || 0;
+    else expense += Number(t.amount) || 0;
+  }
+  return income - expense;
+}
+
+// Total fund balance + a breakdown for transparency in the UI.
+export function fundBalance(config, contributions, transactions, todayYMD) {
+  const seed = Number(config?.startingAmount) || 0;
+  const manualContrib = (contributions || []).reduce((s, c) => s + (Number(c.amount) || 0), 0);
+  const manual = seed + manualContrib;
+  const start = config?.startDate || todayYMD;
+  const auto = Math.max(0, netSurplusSince(transactions, start, todayYMD));
+  return { seed, manualContrib, manual, auto, total: manual + auto, start };
+}
