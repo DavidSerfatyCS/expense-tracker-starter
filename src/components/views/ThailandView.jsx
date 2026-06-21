@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import './thailand.css';
 import ViajeTailandia from './ViajeTailandia';
+import ThailandInsights from './ThailandInsights';
 import Modal from '../Modal';
 import { useThailandGoal } from '../../hooks/useThailandGoal';
-import { fundBalance, estimateTripCost } from '../../utils/thailandCalc';
+import { fundBalance, monthlyInsights, estimateTripCost } from '../../utils/thailandCalc';
 import { todayYMD } from '../../utils/dateUtils';
 
 const money = (n) => `₪${Math.round(Number(n) || 0).toLocaleString('en-US')}`;
@@ -39,6 +40,7 @@ function Onboarding({ onSave }) {
       targetAmount: Number(form.targetAmount),
       startingAmount: Number(form.startingAmount) || 0,
       tripDate: form.tripDate,
+      dailyBudget: Number(est.dailyBudget) || 0,
     });
   };
 
@@ -177,13 +179,24 @@ function ThailandView({ transactions, theme }) {
     [config, contributions, transactions, today]
   );
 
+  const ins = useMemo(
+    () => monthlyInsights(config, fb.total, transactions, today),
+    [config, fb.total, transactions, today]
+  );
+
   if (!config || !config.targetAmount) {
     return <Onboarding onSave={saveConfig} />;
   }
 
   return (
     <>
-      <ViajeTailandia saved={fb.total} goal={config.targetAmount} tripDate={config.tripDate} theme={theme} />
+      <ViajeTailandia
+        saved={fb.total}
+        goal={config.targetAmount}
+        tripDate={config.tripDate}
+        theme={theme}
+        afterOcean={<ThailandInsights ins={ins} theme={theme} />}
+      />
 
       <button
         onClick={() => setShowFund(true)}

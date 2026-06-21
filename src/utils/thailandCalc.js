@@ -201,3 +201,41 @@ export function fundBalance(config, contributions, transactions, todayYMD) {
   const auto = Math.max(0, netSurplusSince(transactions, start, todayYMD));
   return { seed, manualContrib, manual, auto, total: manual + auto, start };
 }
+
+// --- monthly plan / insights (branch tailandia-version) -------------------
+// Builds the "cómo llegar a la meta" insights from the real fund balance
+// (saved already includes the Notion surplus) + recent Notion behaviour.
+export function monthlyInsights(config, saved, transactions, todayYMD) {
+  const target = Number(config?.targetAmount) || 0;
+  const remaining = Math.max(0, target - saved);
+  const monthsLeft = Math.max(0, monthsBetween(todayYMD, config?.tripDate));
+  const monthsWhole = Math.max(1, Math.ceil(monthsLeft));
+
+  const requiredMonthly = remaining / monthsWhole;
+  const requiredWeekly = requiredMonthly / 4.33;
+
+  // Real pace from Notion: average monthly surplus over the last 3 months.
+  const surplus = avgMonthlySurplus(transactions, todayYMD);
+  const pace = Math.max(0, surplus);
+  const projectedFinal = saved + pace * monthsLeft;
+  const projectedGap = Math.max(0, target - projectedFinal);
+  const monthlyGap = Math.max(0, requiredMonthly - pace); // extra €/mes beyond current pace
+
+  let status; // complete | ahead | on-track | short
+  if (saved >= target && target > 0) status = 'complete';
+  else if (requiredMonthly <= 0) status = 'complete';
+  else if (pace >= requiredMonthly) status = 'ahead';
+  else if (pace >= requiredMonthly * 0.85) status = 'on-track';
+  else status = 'short';
+
+  const opportunities = savingsOpportunities(transactions, todayYMD, monthsLeft, Number(config?.dailyBudget) || 0);
+  const cutsPerMonth = opportunities.reduce((s, o) => s + o.suggestedCut, 0);
+  const cutsCoverGap = monthlyGap <= 0 ? true : cutsPerMonth >= monthlyGap;
+
+  return {
+    target, remaining, monthsLeft, monthsWhole,
+    requiredMonthly, requiredWeekly,
+    surplus, pace, projectedFinal, projectedGap, monthlyGap,
+    status, opportunities, cutsPerMonth, cutsCoverGap,
+  };
+}

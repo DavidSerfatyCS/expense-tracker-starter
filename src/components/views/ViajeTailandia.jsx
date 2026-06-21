@@ -491,6 +491,8 @@ export default class ViajeTailandia extends React.Component {
           </div>
         </section>
 
+        {this.props.afterOcean}
+
         {/* RUTA */}
         <section style={s2o("padding:clamp(40px,7vh,90px) clamp(20px,5vw,56px) clamp(56px,10vh,120px);background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--turq) 7%,transparent));overflow:hidden")}>
           <div data-reveal style={s2o("text-align:center;max-width:680px;margin:0 auto 8px")}>
