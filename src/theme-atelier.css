@@ -101,6 +101,11 @@ button { font-family: var(--font-ui); cursor: pointer; }
   padding: 36px 40px 64px;
 }
 
+/* Immersive views (Tailandia) own the full canvas — no shell padding. */
+.main-content.main-content-bleed {
+  padding: 0;
+}
+
 /* ── Nav rail ── */
 .app-nav {
   position: sticky;

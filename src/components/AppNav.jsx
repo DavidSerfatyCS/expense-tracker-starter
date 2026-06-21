@@ -27,6 +27,11 @@ const ICONS = {
       <path d="M12 7v5l4 2.5" />
     </svg>
   ),
+  thailand: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12l8.5 2 4 6 2-2-1.5-5 5-2.5a2 2 0 0 0-2-3.4l-4 2.2-7-4-2 1 4 4.5-4 1-2-1.5-1 1z" />
+    </svg>
+  ),
 };
 
 const NAV_ITEMS = [
@@ -34,6 +39,7 @@ const NAV_ITEMS = [
   { id: 'analytics',    label: 'Analytics' },
   { id: 'transactions', label: 'Transactions' },
   { id: 'budgets',      label: 'Budgets' },
+  { id: 'thailand',     label: 'Tailandia' },
 ];
 
 function AppNav({ view, onNavigate, theme, onToggleTheme }) {

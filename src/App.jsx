@@ -8,6 +8,7 @@ import OverviewView from './components/views/OverviewView'
 import AnalyticsView from './components/views/AnalyticsView'
 import TransactionsView from './components/views/TransactionsView'
 import BudgetsView from './components/views/BudgetsView'
+import ThailandView from './components/views/ThailandView'
 import { getPeriodBounds } from './utils/dateUtils'
 import { useFixedItems } from './hooks/useFixedItems'
 import { useBudgets } from './hooks/useBudgets'
@@ -112,6 +113,19 @@ function App() {
             <div className="skeleton" style={{ height: 96 }} />
             <div className="skeleton" style={{ height: 320 }} />
           </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Tailandia is an immersive, full-bleed view — it bypasses the standard
+  // dashboard header/toolbar and owns the whole canvas.
+  if (view === 'thailand') {
+    return (
+      <div className="app">
+        <AppNav view={view} onNavigate={setView} theme={theme} onToggleTheme={toggleTheme} />
+        <main className="main-content main-content-bleed">
+          <ThailandView transactions={transactions} />
         </main>
       </div>
     );
