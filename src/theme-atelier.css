@@ -947,6 +947,7 @@ tbody tr:hover .icon-btn, tbody tr:focus-within .icon-btn { opacity: 1; }
 }
 
 .recharts-tooltip-label { color: var(--text) !important; font-weight: 500; }
+.recharts-tooltip-item  { color: var(--text) !important; }
 .recharts-cartesian-axis-line, .recharts-cartesian-axis-tick-line { stroke: var(--border); }
 
 /* ── Modal ── */
