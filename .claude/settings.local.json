@@ -14,7 +14,14 @@
       "Bash(pkill -f \"vite\")",
       "Bash(pkill -f \"concurrently\")",
       "Bash(netstat -ano)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(claude plugin *)",
+      "Read(//c/Users/david/.claude/projects/**)",
+      "Bash(git mv *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "WebFetch(domain:expense-tracker-starter-production.up.railway.app)"
     ]
   }
 }

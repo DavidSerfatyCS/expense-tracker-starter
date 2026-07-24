@@ -7,6 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+#claude related
+
+.agents/
+.claude/agent-memory/
+.claude/agents/
+.claude/skills/
+skills-lock.json
+
+
 node_modules
 .env
 dist

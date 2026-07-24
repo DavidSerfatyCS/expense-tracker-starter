@@ -13,7 +13,7 @@ import { getPeriodBounds } from './utils/dateUtils'
 import { useFixedItems } from './hooks/useFixedItems'
 import { useBudgets } from './hooks/useBudgets'
 
-const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:3002').replace(/\/$/, '')
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 
 // Apply the saved theme before the first render so charts read the right
 // CSS variables on mount (the toggle also flips the attribute pre-setState).
